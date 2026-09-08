@@ -53,7 +53,6 @@
 <div class="wrap">
   <h1>かんたん勤怠</h1>
   <div class="sub">出勤・退勤を記録し、月間・年間で確認できます。</div>
-
   <div class="card">
     <div class="row">
       <div>
@@ -68,20 +67,17 @@
     </div>
     <div class="time" id="clock">--:--:--</div>
     <div class="status" id="status">未出勤</div>
-
     <div class="actions">
       <button class="in" onclick="clockIn()">出勤</button>
       <button class="out" onclick="clockOut()">退勤</button>
     </div>
     <button id="lineBtn" class="primary" style="width:100%;margin-top:12px;display:none" onclick="sendLineWork()">今日の労働時間をLINEで送る</button>
   </div>
-
   <div class="card">
     <div class="tabs">
       <button class="tab active" id="tabMonth" onclick="showTab('month')">月間</button>
       <button class="tab" id="tabYear" onclick="showTab('year')">年間</button>
     </div>
-
     <div id="monthPane">
       <div class="row">
         <div>
@@ -94,9 +90,7 @@
         </div>
       </div>
       <div class="summary" style="margin:14px 0">
-        
         <div class="metric"><b id="workHours">0.0</b><span>勤務時間</span></div>
-        
       </div>
       <div class="scroll">
         <table>
@@ -105,7 +99,6 @@
         </table>
       </div>
     </div>
-
     <div id="yearPane" class="hidden">
       <div>
         <label>対象年</label>
@@ -125,7 +118,6 @@
     実際に複数の従業員で使う場合は、次の段階で共通保存先を追加します。
   </div>
 </div>
-
 <script>
 const LS_KEY = 'simple_attendance_v1';
 let activeBreakStart = null;
@@ -134,7 +126,6 @@ function nowTime(){
   const d=new Date();
   return d.toTimeString().slice(0,8);
 }
-
 function todayDisplayStr(){
   const d=new Date();
   const w=['日','月','火','水','木','金','土'];
@@ -150,7 +141,6 @@ function getData(){ try{return JSON.parse(localStorage.getItem(LS_KEY)||'{}')}ca
 function saveData(x){ localStorage.setItem(LS_KEY,JSON.stringify(x)); }
 function emp(){ return document.getElementById('employee').value.trim() || '未設定'; }
 function key(){ return `${emp()}|${document.getElementById('date').value}`; }
-
 function getRec(){
   const d=getData(); return d[key()] || {employee:emp(),date:document.getElementById('date').value,in:'',out:'',breaks:[]};
 }
@@ -161,14 +151,34 @@ function clockIn(){ const r=getRec(); r.in=r.in||nowTime(); putRec(r); }
 function clockOut(){ const r=getRec(); r.out=nowTime(); putRec(r); }
 function sec(t){ if(!t)return 0; const [h,m,s]=t.split(':').map(Number); return h*3600+m*60+s; }
 function diff(a,b){ if(!a||!b)return 0; let x=sec(b)-sec(a); return x<0?x+86400:x; }
+
+// 12:00〜13:00に勤務していた時間だけ、自動で休憩として差し引く
+function lunchBreakSeconds(r){
+  if(!r.in || !r.out) return 0;
+
+  const inSec=sec(r.in);
+  let outSec=sec(r.out);
+  if(outSec < inSec) outSec += 86400;
+
+  const lunchStart=12*3600;
+  const lunchEnd=13*3600;
+
+  const overlapStart=Math.max(inSec,lunchStart);
+  const overlapEnd=Math.min(outSec,lunchEnd);
+
+  return Math.max(0,overlapEnd-overlapStart);
+}
+
 function calc(r){
-  const work=diff(r.in,r.out);
+  const gross=diff(r.in,r.out);
+  const lunch=lunchBreakSeconds(r);
+  const work=Math.max(0,gross-lunch);
   const ot=Math.max(0,work-8*3600);
   return {work,ot};
 }
+
 function fmtH(s){ return (s/3600).toFixed(2); }
 function fmtBreak(s){ return s ? `${Math.round(s/60)}分` : '0分'; }
-
 function renderStatus(){
   const r=getRec(), el=document.getElementById('status');
   updateLineButton();
@@ -190,9 +200,8 @@ function renderMonth(){
     tr.innerHTML=`<td>${r.date}</td><td>${fmtH(c.work)}h</td>`;
     body.appendChild(tr);
   });
-  
+
   document.getElementById('workHours').textContent=fmtH(work);
-  
 }
 function setupYears(){
   const y=new Date().getFullYear(), s=document.getElementById('year'); s.innerHTML='';
