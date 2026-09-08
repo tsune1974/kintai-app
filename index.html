@@ -4,266 +4,913 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>かんたん勤怠</title>
-  <link rel="apple-touch-icon" h
+
 <style>
-  :root{
-    --bg:#f6f7f9; --card:#fff; --text:#1f2937; --muted:#6b7280; --line:#e5e7eb;
-    --primary:#2563eb; --success:#16a34a; --danger:#dc2626; --warning:#d97706;
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic",sans-serif;
+  background:#ffffff;
+  color:#1f2937;
+}
+
+.wrap{
+  max-width:780px;
+  margin:0 auto;
+  padding:24px 18px 50px;
+}
+
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  margin-bottom:8px;
+}
+
+.tomato{
+  font-size:58px;
+  line-height:1;
+}
+
+h1{
+  font-size:38px;
+  margin:0;
+  font-weight:800;
+}
+
+.sub{
+  text-align:center;
+  font-size:18px;
+  margin:12px 0 26px;
+}
+
+label{
+  font-size:18px;
+  font-weight:700;
+}
+
+input,select,button{
+  font:inherit;
+}
+
+input,select{
+  width:100%;
+  border:1px solid #d1d5db;
+  border-radius:12px;
+  padding:14px 16px;
+  background:white;
+}
+
+.nameRow{
+  display:grid;
+  grid-template-columns:140px 1fr;
+  align-items:center;
+  gap:10px;
+  margin-bottom:24px;
+}
+
+.dateLabel{
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.today{
+  background:#ecf9ef;
+  border-radius:14px;
+  padding:16px;
+  text-align:center;
+  font-size:34px;
+  font-weight:800;
+  color:#14532d;
+}
+
+.clock{
+  margin-top:14px;
+  background:#eaf5ff;
+  border-radius:14px;
+  padding:14px;
+  text-align:center;
+  font-size:42px;
+  font-weight:800;
+  color:#1670c5;
+}
+
+.status{
+  text-align:center;
+  margin:10px 0 18px;
+  font-size:20px;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+button{
+  border:0;
+  border-radius:14px;
+  padding:16px;
+  font-size:20px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.in{
+  background:#2eaa50;
+  color:white;
+}
+
+.out{
+  background:#eeeeee;
+  color:#202733;
+}
+
+.line{
+  width:100%;
+  margin-top:14px;
+  background:#e9f6ff;
+  color:#0878d8;
+}
+
+.tabs{
+  display:flex;
+  gap:12px;
+  margin-top:28px;
+  margin-bottom:20px;
+}
+
+.tab{
+  padding:12px 24px;
+  background:#eeeeee;
+}
+
+.tab.active{
+  background:#2f92ed;
+  color:white;
+}
+
+.monthRow{
+  display:grid;
+  grid-template-columns:100px 1fr;
+  align-items:center;
+  gap:10px;
+}
+
+.csv{
+  width:100%;
+  margin-top:18px;
+  background:#eeeeee;
+  color:#202733;
+}
+
+.summaryBox{
+  margin-top:14px;
+  padding:20px;
+  border-radius:15px;
+  background:#fff8e8;
+}
+
+.summaryTitle{
+  font-size:18px;
+}
+
+.summaryHours{
+  font-size:38px;
+  font-weight:800;
+  color:#6d3c00;
+}
+
+.summaryMinutes{
+  font-size:18px;
+  margin-left:12px;
+}
+
+.scroll{
+  overflow:auto;
+  margin-top:18px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:15px;
+}
+
+th,td{
+  border-bottom:1px solid #e5e7eb;
+  padding:10px 6px;
+  text-align:center;
+  white-space:nowrap;
+}
+
+th{
+  background:#f8fafc;
+}
+
+.hidden{
+  display:none;
+}
+
+.note{
+  margin-top:20px;
+  font-size:13px;
+  color:#6b7280;
+  line-height:1.5;
+}
+
+@media(max-width:600px){
+  .wrap{
+    padding:20px 14px 40px;
   }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:var(--bg);color:var(--text)}
-  .wrap{max-width:780px;margin:0 auto;padding:16px}
-  h1{font-size:24px;margin:6px 0 4px}
-  .sub{color:var(--muted);font-size:14px;margin-bottom:16px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.03)}
-  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-  input,select,button{font:inherit}
-  input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-  button{border:0;border-radius:12px;padding:14px;font-weight:700;cursor:pointer}
-  .in{background:var(--success);color:#fff}
-  .out{background:var(--danger);color:#fff}
-  .break{background:var(--warning);color:#fff}
-  .secondary{background:#eef2ff;color:#3730a3}
-  .primary{background:var(--primary);color:#fff}
-  .small{padding:9px 12px;font-size:13px}
-  .status{font-size:18px;font-weight:700;margin-top:8px}
-  .time{font-size:36px;font-weight:800;letter-spacing:.5px;margin:4px 0}
-  .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-  .metric{background:#f9fafb;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
-  .metric b{display:block;font-size:20px}
-  .metric span{font-size:12px;color:var(--muted)}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  th,td{border-bottom:1px solid var(--line);padding:9px 6px;text-align:center;white-space:nowrap}
-  th{background:#f9fafb;position:sticky;top:0}
-  .scroll{overflow:auto}
-  .tabs{display:flex;gap:8px;margin-bottom:12px}
-  .tab{flex:1;background:#e5e7eb}
-  .tab.active{background:#111827;color:#fff}
-  .hidden{display:none}
-  .note{font-size:12px;color:var(--muted);line-height:1.5}
-  @media(max-width:600px){
-    .summary{grid-template-columns:1fr 1fr}
-    .row{grid-template-columns:1fr}
-    .actions{grid-template-columns:1fr 1fr}
+
+  h1{
+    font-size:32px;
   }
+
+  .tomato{
+    font-size:48px;
+  }
+
+  .sub{
+    font-size:16px;
+  }
+
+  .nameRow{
+    grid-template-columns:120px 1fr;
+  }
+
+  .today{
+    font-size:29px;
+  }
+
+  .clock{
+    font-size:38px;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <div class="wrap">
-  <h1>かんたん勤怠</h1>
-  <div class="sub">出勤・退勤を記録し、月間・年間で確認できます。</div>
-  <div class="card">
-    <div class="row">
-      <div>
-        <label>従業員名</label>
-        <input id="employee" placeholder="例：山田 太郎">
-      </div>
-      <div>
-        <label>本日の日付</label>
-        <div id="todayDisplay" style="font-size:28px;font-weight:800;padding:10px 0">--/--/--（-）</div>
-        <input id="date" type="hidden">
-      </div>
-    </div>
-    <div class="time" id="clock">--:--:--</div>
-    <div class="status" id="status">未出勤</div>
-    <div class="actions">
-      <button class="in" onclick="clockIn()">出勤</button>
-      <button class="out" onclick="clockOut()">退勤</button>
-    </div>
-    <button id="lineBtn" class="primary" style="width:100%;margin-top:12px;" onclick="sendLineWork()">今日の労働時間をLINEで送る</button>
-  </div>
-  <div class="card">
-    <div class="tabs">
-      <button class="tab active" id="tabMonth" onclick="showTab('month')">月間</button>
-      <button class="tab" id="tabYear" onclick="showTab('year')">年間</button>
-    </div>
-    <div id="monthPane">
-      <div class="row">
-        <div>
-          <label>対象月</label>
-          <input id="month" type="month" onchange="renderMonth()">
-        </div>
-        <div style="display:flex;align-items:end;gap:8px">
-          <button class="primary small" style="width:100%" onclick="exportCSV()">CSV出力</button>
-          <button class="secondary small" style="width:100%" onclick="clearCurrentEmployee()">この人のデータ削除</button>
-        </div>
-      </div>
-      <div class="summary" style="margin:14px 0">
-        <div class="metric"><b id="workHours">0.0</b><span>勤務時間</span></div>
-      </div>
-      <div class="scroll">
-        <table>
-          <thead><tr><th>日付</th><th>労働時間</th></tr></thead>
-          <tbody id="monthBody"></tbody>
-        </table>
-      </div>
-    </div>
-    <div id="yearPane" class="hidden">
-      <div>
-        <label>対象年</label>
-        <select id="year" onchange="renderYear()"></select>
-      </div>
-      <div class="scroll" style="margin-top:12px">
-        <table>
-          <thead><tr><th>月</th><th>労働時間</th></tr></thead>
-          <tbody id="yearBody"></tbody>
-        </table>
-      </div>
-    </div>
+
+  <div class="header">
+    <div class="tomato">🍅</div>
+    <h1>かんたん勤怠</h1>
   </div>
 
-  <div class="card note">
-    この試作品のデータは、この端末のブラウザ内に保存されます。別のスマホとは自動共有されません。
-    実際に複数の従業員で使う場合は、次の段階で共通保存先を追加します。
+  <div class="sub">
+    出勤・退勤を記録し、月間・年間で確認できます。
   </div>
+
+  <div class="nameRow">
+    <label for="employee">従業員名</label>
+    <input id="employee" placeholder="例：山田 太郎">
+  </div>
+
+  <div class="dateLabel">本日の日付</div>
+
+  <div id="todayDisplay" class="today">
+    ----/--/--（-）
+  </div>
+
+  <input id="date" type="hidden">
+
+  <div id="clock" class="clock">
+    --:--:--
+  </div>
+
+  <div id="status" class="status">
+    未出勤
+  </div>
+
+  <div class="actions">
+    <button class="in" onclick="clockIn()">出勤</button>
+    <button class="out" onclick="clockOut()">退勤</button>
+  </div>
+
+  <button
+    id="lineBtn"
+    class="line"
+    style="display:none"
+    onclick="sendLineWork()">
+    今日の労働時間をLINEで送る
+  </button>
+
+  <div class="tabs">
+    <button
+      id="tabMonth"
+      class="tab active"
+      onclick="showTab('month')">
+      月間
+    </button>
+
+    <button
+      id="tabYear"
+      class="tab"
+      onclick="showTab('year')">
+      年間
+    </button>
+  </div>
+
+  <div id="monthPane">
+
+    <div class="monthRow">
+      <label for="month">対象月</label>
+      <input
+        id="month"
+        type="month"
+        onchange="renderMonth()">
+    </div>
+
+    <button class="csv" onclick="exportCSV()">
+      CSV出力
+    </button>
+
+    <div class="summaryBox">
+      <div class="summaryTitle">本月の労働時間</div>
+
+      <span id="workHours" class="summaryHours">
+        0.00 時間
+      </span>
+
+      <span id="workMinutes" class="summaryMinutes">
+        （0分）
+      </span>
+    </div>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>日付</th>
+            <th>出勤</th>
+            <th>退勤</th>
+            <th>労働時間</th>
+          </tr>
+        </thead>
+
+        <tbody id="monthBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div id="yearPane" class="hidden">
+
+    <label for="year">対象年</label>
+    <select id="year" onchange="renderYear()"></select>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>月</th>
+            <th>労働時間</th>
+          </tr>
+        </thead>
+
+        <tbody id="yearBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="note">
+    12:00〜13:00は休憩時間として、自動的に労働時間から差し引きます。
+  </div>
+
 </div>
+
 <script>
-const LS_KEY = 'simple_attendance_v1';
-let activeBreakStart = null;
+
+const LS_KEY = "simple_attendance_v1";
 
 function nowTime(){
-  const d=new Date();
+  const d = new Date();
   return d.toTimeString().slice(0,8);
 }
-function todayDisplayStr(){
-  const d=new Date();
-  const w=['日','月','火','水','木','金','土'];
-  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
-  return `${y}/${m}/${day}（${w[d.getDay()]}）`;
-}
+
 function todayStr(){
-  const d=new Date();
-  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  const d = new Date();
+
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+
   return `${y}-${m}-${day}`;
 }
-function getData(){ try{return JSON.parse(localStorage.getItem(LS_KEY)||'{}')}catch{return{}} }
-function saveData(x){ localStorage.setItem(LS_KEY,JSON.stringify(x)); }
-function emp(){ return document.getElementById('employee').value.trim() || '未設定'; }
-function key(){ return `${emp()}|${document.getElementById('date').value}`; }
-function getRec(){
-  const d=getData(); return d[key()] || {employee:emp(),date:document.getElementById('date').value,in:'',out:'',breaks:[]};
-}
-function putRec(r){
-  const d=getData(); d[key()]=r; saveData(d); renderMonth(); renderYear(); renderStatus();
-}
-function clockIn(){ const r=getRec(); r.in=r.in||nowTime(); putRec(r); }
-function clockOut(){ const r=getRec(); r.out=nowTime(); putRec(r); }
-function sec(t){ if(!t)return 0; const [h,m,s]=t.split(':').map(Number); return h*3600+m*60+s; }
-function diff(a,b){ if(!a||!b)return 0; let x=sec(b)-sec(a); return x<0?x+86400:x; }
 
-// 12:00〜13:00に勤務していた時間だけ、自動で休憩として差し引く
-function lunchBreakSeconds(r){
-  if(!r.in || !r.out) return 0;
+function todayDisplayStr(){
+  const d = new Date();
 
-  const inSec=sec(r.in);
-  let outSec=sec(r.out);
-  if(outSec < inSec) outSec += 86400;
+  const week = ["日","月","火","水","木","金","土"];
 
-  const lunchStart=12*3600;
-  const lunchEnd=13*3600;
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
 
-  const overlapStart=Math.max(inSec,lunchStart);
-  const overlapEnd=Math.min(outSec,lunchEnd);
-
-  return Math.max(0,overlapEnd-overlapStart);
+  return `${y}/${m}/${day}（${week[d.getDay()]}）`;
 }
 
-function calc(r){
-  const gross=diff(r.in,r.out);
-  const lunch=lunchBreakSeconds(r);
-  const work=Math.max(0,gross-lunch);
-  const ot=Math.max(0,work-8*3600);
-  return {work,ot};
+function getData(){
+
+  try{
+    return JSON.parse(
+      localStorage.getItem(LS_KEY) || "{}"
+    );
+  }
+  catch{
+    return {};
+  }
+
 }
 
-function fmtH(s){ return (s/3600).toFixed(2); }
-function fmtBreak(s){ return s ? `${Math.round(s/60)}分` : '0分'; }
+function saveData(data){
+  localStorage.setItem(
+    LS_KEY,
+    JSON.stringify(data)
+  );
+}
+
+function employee(){
+
+  return (
+    document.getElementById("employee")
+      .value
+      .trim()
+    || "未設定"
+  );
+
+}
+
+function recordKey(){
+
+  return (
+    employee()
+    + "|"
+    + document.getElementById("date").value
+  );
+
+}
+
+function getRecord(){
+
+  const data = getData();
+
+  return data[recordKey()] || {
+    employee: employee(),
+    date: document.getElementById("date").value,
+    in:"",
+    out:"",
+    breaks:[]
+  };
+
+}
+
+function saveRecord(record){
+
+  const data = getData();
+
+  data[recordKey()] = record;
+
+  saveData(data);
+
+  renderStatus();
+  renderMonth();
+  renderYear();
+
+}
+
+function clockIn(){
+
+  const r = getRecord();
+
+  if(!r.in){
+    r.in = nowTime();
+  }
+
+  saveRecord(r);
+
+}
+
+function clockOut(){
+
+  const r = getRecord();
+
+  if(!r.in){
+    alert("先に出勤を押してください。");
+    return;
+  }
+
+  r.out = nowTime();
+
+  saveRecord(r);
+
+}
+
+function seconds(time){
+
+  if(!time){
+    return 0;
+  }
+
+  const p = time.split(":").map(Number);
+
+  return (
+    p[0]*3600
+    + p[1]*60
+    + p[2]
+  );
+
+}
+
+function workSeconds(record){
+
+  if(!record.in || !record.out){
+    return 0;
+  }
+
+  let start = seconds(record.in);
+  let end = seconds(record.out);
+
+  if(end < start){
+    end += 86400;
+  }
+
+  let total = end - start;
+
+  const lunchStart = 12 * 3600;
+  const lunchEnd = 13 * 3600;
+
+  const overlapStart =
+    Math.max(start,lunchStart);
+
+  const overlapEnd =
+    Math.min(end,lunchEnd);
+
+  if(overlapEnd > overlapStart){
+    total -= overlapEnd - overlapStart;
+  }
+
+  return Math.max(0,total);
+
+}
+
 function renderStatus(){
-  const r=getRec(), el=document.getElementById('status');
-  updateLineButton();
-  if(r.out) el.textContent=`退勤済み ${r.out}`;
-  else if(r.in) el.textContent=`勤務中（出勤 ${r.in}）`;
-  else el.textContent='未出勤';
+
+  const r = getRecord();
+
+  const status =
+    document.getElementById("status");
+
+  if(r.out){
+    status.textContent =
+      "退勤済み " + r.out;
+  }
+  else if(r.in){
+    status.textContent =
+      "勤務中（出勤 " + r.in + "）";
+  }
+  else{
+    status.textContent =
+      "未出勤";
+  }
+
+  document.getElementById("lineBtn")
+    .style.display =
+    r.in && r.out
+    ? "block"
+    : "none";
+
 }
-function recordsForEmployee(){
-  return Object.values(getData()).filter(r=>r.employee===emp());
+
+function employeeRecords(){
+
+  return Object
+    .values(getData())
+    .filter(
+      r => r.employee === employee()
+    );
+
 }
+
+function formatHours(sec){
+
+  return (sec / 3600).toFixed(2);
+
+}
+
+function formatHM(sec){
+
+  const totalMinutes =
+    Math.round(sec / 60);
+
+  const h =
+    Math.floor(totalMinutes / 60);
+
+  const m =
+    totalMinutes % 60;
+
+  return `${h}時間${m}分`;
+
+}
+
 function renderMonth(){
-  const month=document.getElementById('month').value;
-  const rows=recordsForEmployee().filter(r=>r.date.startsWith(month)).sort((a,b)=>a.date.localeCompare(b.date));
-  let days=0,work=0,ot=0;
-  const body=document.getElementById('monthBody'); body.innerHTML='';
+
+  const month =
+    document.getElementById("month").value;
+
+  const rows =
+    employeeRecords()
+    .filter(
+      r => r.date.startsWith(month)
+    )
+    .sort(
+      (a,b) =>
+      a.date.localeCompare(b.date)
+    );
+
+  let total = 0;
+
+  const body =
+    document.getElementById("monthBody");
+
+  body.innerHTML = "";
+
   rows.forEach(r=>{
-    const c=calc(r); if(r.in)days++; work+=c.work;ot+=c.ot;
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${r.date}</td><td>${fmtH(c.work)}h</td>`;
+
+    const sec = workSeconds(r);
+
+    total += sec;
+
+    const tr =
+      document.createElement("tr");
+
+    tr.innerHTML =
+      `<td>${r.date}</td>
+       <td>${r.in || "-"}</td>
+       <td>${r.out || "-"}</td>
+       <td>${formatHours(sec)}h</td>`;
+
     body.appendChild(tr);
+
   });
 
-  document.getElementById('workHours').textContent=fmtH(work);
+  document.getElementById("workHours")
+    .textContent =
+    formatHours(total) + " 時間";
+
+  document.getElementById("workMinutes")
+    .textContent =
+    "（" +
+    Math.round(total / 60)
+    + "分）";
+
 }
+
 function setupYears(){
-  const y=new Date().getFullYear(), s=document.getElementById('year'); s.innerHTML='';
-  for(let i=y-2;i<=y+2;i++){ const o=document.createElement('option');o.value=i;o.textContent=i+'年'; if(i===y)o.selected=true;s.appendChild(o);}
-}
-function renderYear(){
-  const y=document.getElementById('year').value;
-  const body=document.getElementById('yearBody'); body.innerHTML='';
-  for(let m=1;m<=12;m++){
-    const mm=String(m).padStart(2,'0'), rows=recordsForEmployee().filter(r=>r.date.startsWith(`${y}-${mm}`));
-    let days=0,work=0,ot=0;
-    rows.forEach(r=>{const c=calc(r);if(r.in)days++;work+=c.work;ot+=c.ot;});
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${m}月</td><td>${fmtH(work)}h</td>`;
-    body.appendChild(tr);
+
+  const current =
+    new Date().getFullYear();
+
+  const select =
+    document.getElementById("year");
+
+  select.innerHTML = "";
+
+  for(
+    let y=current-2;
+    y<=current+2;
+    y++
+  ){
+
+    const option =
+      document.createElement("option");
+
+    option.value = y;
+    option.textContent =
+      y + "年";
+
+    if(y === current){
+      option.selected = true;
+    }
+
+    select.appendChild(option);
+
   }
+
 }
-function workText(){
-  const r=getRec(), c=calc(r);
-  if(!r.in || !r.out) return null;
-  const totalMinutes=Math.round(c.work/60);
-  const h=Math.floor(totalMinutes/60), m=totalMinutes%60;
-  return `${r.employee}｜${r.date.replaceAll('-','/')}｜労働時間 ${h}時間${String(m).padStart(2,'0')}分`;
+
+function renderYear(){
+
+  const year =
+    document.getElementById("year").value;
+
+  const body =
+    document.getElementById("yearBody");
+
+  body.innerHTML = "";
+
+  for(let m=1;m<=12;m++){
+
+    const mm =
+      String(m).padStart(2,"0");
+
+    const rows =
+      employeeRecords()
+      .filter(
+        r =>
+        r.date.startsWith(
+          `${year}-${mm}`
+        )
+      );
+
+    let total = 0;
+
+    rows.forEach(r=>{
+      total += workSeconds(r);
+    });
+
+    const tr =
+      document.createElement("tr");
+
+    tr.innerHTML =
+      `<td>${m}月</td>
+       <td>${formatHours(total)}h</td>`;
+
+    body.appendChild(tr);
+
+  }
+
 }
+
+function showTab(tab){
+
+  const monthPane =
+    document.getElementById("monthPane");
+
+  const yearPane =
+    document.getElementById("yearPane");
+
+  monthPane.classList.toggle(
+    "hidden",
+    tab !== "month"
+  );
+
+  yearPane.classList.toggle(
+    "hidden",
+    tab !== "year"
+  );
+
+  document
+    .getElementById("tabMonth")
+    .classList.toggle(
+      "active",
+      tab === "month"
+    );
+
+  document
+    .getElementById("tabYear")
+    .classList.toggle(
+      "active",
+      tab === "year"
+    );
+
+  if(tab === "year"){
+    renderYear();
+  }
+
+}
+
 function sendLineWork(){
-  const text=workText();
-  if(!text){ alert('先に退勤を押してください。'); return; }
-  const url='https://line.me/R/share?text='+encodeURIComponent(text);
-  window.location.href=url;
+
+  const r = getRecord();
+
+  if(!r.in || !r.out){
+    alert("先に退勤を押してください。");
+    return;
+  }
+
+  const work =
+    formatHM(workSeconds(r));
+
+  const text =
+    `${r.employee}｜`
+    + `${r.date.replaceAll("-","/")}｜`
+    + `労働時間 ${work}`;
+
+  const url =
+    "https://line.me/R/share?text="
+    + encodeURIComponent(text);
+
+  window.location.href = url;
+
 }
-function updateLineButton(){
-  const r=getRec();
-  document.getElementById('lineBtn').style.display=(r.in&&r.out)?'block':'none';
-}
-function showTab(t){
-  document.getElementById('monthPane').classList.toggle('hidden',t!=='month');
-  document.getElementById('yearPane').classList.toggle('hidden',t!=='year');
-  document.getElementById('tabMonth').classList.toggle('active',t==='month');
-  document.getElementById('tabYear').classList.toggle('active',t==='year');
-  if(t==='year') renderYear();
-}
+
 function exportCSV(){
-  const month=document.getElementById('month').value;
-  const rows=recordsForEmployee().filter(r=>r.date.startsWith(month)).sort((a,b)=>a.date.localeCompare(b.date));
-  let csv='\uFEFF氏名,日付,労働時間\n';
-  rows.forEach(r=>{const c=calc(r);csv+=`${r.employee},${r.date},${fmtH(c.work)}\n`;});
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`勤怠_${emp()}_${month}.csv`; a.click(); URL.revokeObjectURL(a.href);
+
+  const month =
+    document.getElementById("month").value;
+
+  const rows =
+    employeeRecords()
+    .filter(
+      r => r.date.startsWith(month)
+    )
+    .sort(
+      (a,b) =>
+      a.date.localeCompare(b.date)
+    );
+
+  let csv =
+    "\uFEFF氏名,日付,出勤,退勤,労働時間\n";
+
+  rows.forEach(r=>{
+
+    csv +=
+      `${r.employee},`
+      + `${r.date},`
+      + `${r.in || ""},`
+      + `${r.out || ""},`
+      + `${formatHours(workSeconds(r))}\n`;
+
+  });
+
+  const blob =
+    new Blob(
+      [csv],
+      {type:"text/csv;charset=utf-8"}
+    );
+
+  const a =
+    document.createElement("a");
+
+  a.href =
+    URL.createObjectURL(blob);
+
+  a.download =
+    `勤怠_${employee()}_${month}.csv`;
+
+  a.click();
+
+  URL.revokeObjectURL(a.href);
+
 }
-function clearCurrentEmployee(){
-  if(!confirm(`${emp()} の勤怠データをすべて削除しますか？`)) return;
-  const d=getData(); Object.keys(d).forEach(k=>{if(d[k].employee===emp())delete d[k]}); saveData(d); renderMonth();renderYear();renderStatus();
-}
-document.getElementById('employee').addEventListener('change',()=>{localStorage.setItem('attendance_employee',emp());renderMonth();renderYear();renderStatus()});
-document.getElementById('date').addEventListener('change',renderStatus);
-setInterval(()=>document.getElementById('clock').textContent=nowTime(),500);
-document.getElementById('date').value=todayStr();
-document.getElementById('todayDisplay').textContent=todayDisplayStr();
-document.getElementById('month').value=todayStr().slice(0,7);
-document.getElementById('employee').value=localStorage.getItem('attendance_employee')||'';
-setupYears();renderStatus();renderMonth();renderYear();
+
+document
+  .getElementById("employee")
+  .addEventListener(
+    "change",
+    ()=>{
+      localStorage.setItem(
+        "attendance_employee",
+        employee()
+      );
+
+      renderStatus();
+      renderMonth();
+      renderYear();
+    }
+  );
+
+document.getElementById("date").value =
+  todayStr();
+
+document.getElementById("todayDisplay")
+  .textContent =
+  todayDisplayStr();
+
+document.getElementById("month").value =
+  todayStr().slice(0,7);
+
+document.getElementById("employee").value =
+  localStorage.getItem(
+    "attendance_employee"
+  ) || "";
+
+setupYears();
+
+renderStatus();
+renderMonth();
+renderYear();
+
+setInterval(
+  ()=>{
+    document.getElementById("clock")
+      .textContent =
+      nowTime();
+  },
+  500
+);
+
 </script>
+
 </body>
 </html>
