@@ -810,7 +810,7 @@ function sendLineWork(){
 
   fetch("https://script.google.com/macros/s/AKfycbzLctfkdXjtycy8-lljzpAehgwiMYPbk2TjpgBSsO-y-awwsMctV_t3gyK-a9-Y0Ixc/exec",{
     method: "post",
-    body: newURLSearchParams({ text:text });
+    body: new URLSearchParams({ text:text });
   })
 
 }
