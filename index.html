@@ -295,6 +295,8 @@ th{
     <button class="out" onclick="clockOut()">退勤</button>
   </div>
 
+
+  
   <button
     id="lineBtn"
     class="line"
@@ -806,11 +808,10 @@ function sendLineWork(){
     + `${r.date.replaceAll("-","/")}｜`
     + `労働時間 ${work}`;
 
-  const url =
-    "https://line.me/R/share?text="
-    + encodeURIComponent(text);
-
-  window.location.href = url;
+  fetch("https://script.google.com/macros/s/AKfycbzLctfkdXjtycy8-lljzpAehgwiMYPbk2TjpgBSsO-y-awwsMctV_t3gyK-a9-Y0Ixc/exec",{
+    method: "post",
+    body: newURLSearchParams({ text:text });
+  });
 
 }
 
