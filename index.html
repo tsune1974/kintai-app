@@ -561,7 +561,7 @@ function workSeconds(record){
     total -= overlapEnd - overlapStart;
   }
 
-  return Math.max(0,total);
+  return Math.floor(Math.max(0,total) / 1800) * 1800;
 
 }
 
