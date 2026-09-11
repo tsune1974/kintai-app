@@ -808,16 +808,9 @@ function sendLineWork(){
     + `${r.date.replaceAll("-","/")}｜`
     + `労働時間 ${work}`;
 
- fetch("https://proud-lab-d5d2.sere7s-sere7.workers.dev/", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ text: text })
-});
+ 
 
 }
-
 function exportCSV(){
 
   const month =
