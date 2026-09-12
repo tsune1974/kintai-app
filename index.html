@@ -805,7 +805,7 @@ function sendLineWork(){
 
   const text =
     `${r.employee}｜`
-    + `${r.date.replaceAll("-","/")}｜`
+    + `${r.date.replace(/-/g,"/")}｜`
     + `労働時間 ${work}`;
 
  const url =
